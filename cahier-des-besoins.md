@@ -55,6 +55,7 @@ Pour tous les exemples, sauf indication contraire :
 | E | 65 000 | 28/08/2026 à 50 000 km | vidange **due** (pile 15 000 km) | R6, cas limite |
 | F | 70 000 | une à 40 000 km **et** une à 60 000 km | **rien** à faire (seule celle de 60 000 compte) | R4 |
 | G | 50 000 | on essaie d'ajouter une vidange à 60 000 km | **refusé** (erreur) | R3 |
+| H | 50 000 | On ajoute un entretien en plus dans l'history | **rien** (vérifier état liste) |  |
 
 Exemple avec deux types d'entretien :
 
