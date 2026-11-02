@@ -3,6 +3,7 @@ from datetime import date
 import pytest
 
 from carnet_entretien.models import Vehicle, Maintenance
+from carnet_entretien.enums import maintenance_type
 
 TODAY = date(2026, 10, 30)
 
@@ -14,23 +15,23 @@ def test_is_new_vehicle_history_empty():
 
 
 def test_vehicle_maintenance():
-    maintenance = Maintenance("Entretien annuel", date(2026, 4, 19), 12_000)
+    maintenance = Maintenance(maintenance_type.ENGINE, date(2026, 4, 19), 12_000)
 
-    assert maintenance.maintenance_type == "Entretien annuel"
+    assert maintenance.maintenance_type == maintenance_type.ENGINE
     assert maintenance.maintenance_date == date(2026, 4, 19)
     assert maintenance.mileage_km == 12_000
 
 
 def test_vehicle_maintenance_immutability():
-    maintenance = Maintenance("Entretien annuel", date(2026, 4, 19), 12_000)
+    maintenance = Maintenance(maintenance_type.ENGINE, date(2026, 4, 19), 12_000)
 
     with pytest.raises(FrozenInstanceError):
-        maintenance.maintenance_type = "Courroie de distribution"
+        maintenance.maintenance_type = maintenance_type.BRAKES
 
 
 def test_add_maintenance_to_vehicle():
     vehicle = Vehicle("Volskswagen", "Polo", 50_000)
-    maintenance = Maintenance("Vidange", date(2026, 10, 1), 48_000)
+    maintenance = Maintenance(maintenance_type.ENGINE, date(2026, 10, 1), 48_000)
 
     vehicle.add_maintenance(maintenance, TODAY)
 
@@ -39,7 +40,7 @@ def test_add_maintenance_to_vehicle():
 
 def test_accept_maintenance_if_vehicle_and_maintenance_kms_are_equal():
     vehicle = Vehicle("Volskswagen", "Polo", 50_000)
-    maintenance = Maintenance("Vidange", date(2026, 10, 1), 50_000)
+    maintenance = Maintenance(maintenance_type.ENGINE, date(2026, 10, 1), 50_000)
 
     vehicle.add_maintenance(maintenance, TODAY)
 
@@ -48,8 +49,8 @@ def test_accept_maintenance_if_vehicle_and_maintenance_kms_are_equal():
 
 def test_adding_second_maintenance_doesnt_eraise_the_older_one():
     vehicle = Vehicle("Volskswagen", "Polo", 50_000)
-    old_maintenance = Maintenance("Vidange", date(2024, 10, 1), 12_000)
-    new_maintenance = Maintenance("Vidange", date(2025, 10, 1), 24_000)
+    old_maintenance = Maintenance(maintenance_type.ENGINE, date(2024, 10, 1), 12_000)
+    new_maintenance = Maintenance(maintenance_type.ENGINE, date(2025, 10, 1), 24_000)
 
     vehicle.add_maintenance(old_maintenance, TODAY)
     vehicle.add_maintenance(new_maintenance, TODAY)
@@ -59,7 +60,9 @@ def test_adding_second_maintenance_doesnt_eraise_the_older_one():
 
 def test_wrong_kms_raises_value_error():
     vehicle = Vehicle("Wolsksvagen", "Polo", 50_000)
-    wrong_maintenance_kms = Maintenance("Vidange", date(2026, 10, 1), 60_000)
+    wrong_maintenance_kms = Maintenance(
+        maintenance_type.ENGINE, date(2026, 10, 1), 60_000
+    )
 
     with pytest.raises(
         ValueError,
@@ -70,7 +73,9 @@ def test_wrong_kms_raises_value_error():
 
 def test_wrong_date_raises_value_error():
     vehicle = Vehicle("Wolsksvagen", "Polo", 50_000)
-    wrong_maintenance_date = Maintenance("Vidange", date(2026, 11, 1), 48_000)
+    wrong_maintenance_date = Maintenance(
+        maintenance_type.ENGINE, date(2026, 11, 1), 48_000
+    )
 
     with pytest.raises(
         ValueError, match="The maintenance date must NOT be greather than today's date"

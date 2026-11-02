@@ -1,10 +1,12 @@
+from carnet_entretien.enums import maintenance_type
+
 from dataclasses import dataclass, field
 from datetime import date
 
 
 @dataclass(frozen=True)
 class Maintenance:
-    maintenance_type: str
+    maintenance_type: maintenance_type
     maintenance_date: date
     mileage_km: int
 
