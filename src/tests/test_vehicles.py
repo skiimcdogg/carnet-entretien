@@ -4,7 +4,7 @@ from datetime import date
 import pytest
 
 from carnet_entretien.enums import MaintenanceType
-from carnet_entretien.models import Maintenance, Vehicle
+from carnet_entretien.models import Maintenance, Vehicle, MaintenanceRule
 
 TODAY = date(2026, 10, 30)
 
@@ -20,7 +20,7 @@ def test_vehicle_maintenance():
 
     assert maintenance.maintenance_type == MaintenanceType.ANNUAL_SERVICE
     assert maintenance.maintenance_date == date(2026, 4, 19)
-    assert maintenance.mileage_km == 12_000
+    assert maintenance.mileage_kms == 12_000
 
 
 def test_vehicle_maintenance_immutability():
@@ -132,3 +132,23 @@ def test_get_last_maintenance_when_there_is_two_of_the_same_type():
     assert last_maintenance == Maintenance(
         MaintenanceType.ANNUAL_SERVICE, date(2026, 10, 1), 36_000
     )
+
+
+def test_rule_with_only_kms_is_accepted():
+    rule = MaintenanceRule(kms=120_000)
+
+    assert rule.kms == 120_000
+    assert rule.months is None
+
+
+def test_rule_with_only_months_is_accepted():
+    rule = MaintenanceRule(months=12)
+
+    assert rule.kms is None
+    assert rule.months == 12
+
+
+def test_rule_with_neither_kms_or_months_is_refused():
+
+    with pytest.raises(ValueError, match="Kms or months must have a value"):
+        MaintenanceRule()

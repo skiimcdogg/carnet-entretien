@@ -1,7 +1,7 @@
 from datetime import date
 
 from carnet_entretien.enums import MaintenanceType
-from carnet_entretien.models import Maintenance, Vehicle
+from carnet_entretien.models import Maintenance, Vehicle, MaintenancePlan
 
 my_sandero = Vehicle("Dacia", "Sandero", 80_000)
 
@@ -14,3 +14,7 @@ my_sandero.add_maintenance(maintenance_2, date.today())
 print(my_sandero.maintenance_history)
 
 print(my_sandero.find_last_maintenance(MaintenanceType.ANNUAL_SERVICE))
+
+test = MaintenancePlan(None, 15)
+
+print(test)
