@@ -3,7 +3,7 @@
 > Ce document décrit **ce que l'application doit faire**, pas **comment** la coder.
 > Les noms des fichiers, classes, fonctions et variables, c'est **toi** qui les choisis.
 >
-> Dernière mise à jour : 3 novembre 2026, Sprint 1, étape 5 terminée.
+> Dernière mise à jour : 9 novembre 2026, Sprint 1, étape 6 en cours.
 
 ---
 
@@ -20,7 +20,8 @@ Il voudrait une application qui lui dise : « Ta révision annuelle est à faire
 
 | Mot | Ce que ça veut dire | Exemple |
 |---|---|---|
-| **Véhicule** | La voiture suivie : marque, modèle, kilométrage actuel. | Dacia Sandero, 70 000 km |
+| **Véhicule** | La voiture suivie : marque, modèle, kilométrage actuel, date de première mise en circulation. | Dacia Sandero, 70 000 km, en circulation depuis le 01/01/2020 |
+| **Mise en circulation** | La date de la carte grise. C'est le point de départ quand un entretien n'a jamais été fait. | 01/01/2020 |
 | **Entretien** | Une opération **prévisible**, qui revient à un rythme connu (km et/ou temps). | Révision annuelle, courroie de distribution |
 | **Réparation** | Une intervention **imprévisible**, suite à une casse ou une panne. Hors périmètre. | Alternateur HS |
 | **Type d'entretien** | La nature d'un entretien, choisie dans une **liste fermée**. | Révision annuelle |
@@ -69,7 +70,7 @@ Pneus et plaquettes s'usent selon la conduite, mais on leur donne une durée de 
 
 ### Le calcul des entretiens dus
 - **R7.** Pour un type d'entretien, seule la **dernière** intervention compte : celle avec le **plus grand kilométrage**.
-- **R8.** Un entretien est **dû** s'il n'a **jamais** été fait.
+- **R8.** Si un entretien n'a **jamais** été fait, on compte depuis la sortie de la voiture : **0 km** et la **date de mise en circulation**. Les vérifications R9 à R11 s'appliquent ensuite normalement. Un entretien jamais fait n'est donc **pas** forcément dû : une voiture neuve n'a pas besoin de sa courroie.
 - **R9.** Un entretien est **dû** si les km parcourus depuis la dernière intervention **atteignent ou dépassent** la limite en km, quand il y en a une.
 - **R10.** Un entretien est **dû** si le temps passé depuis la dernière intervention **atteint ou dépasse** la limite en temps, quand il y en a une. On compte 1 mois = 30 jours.
 - **R11.** C'est **le premier des deux** qui compte : une seule limite atteinte suffit.
@@ -81,6 +82,7 @@ Pneus et plaquettes s'usent selon la conduite, mais on leur donne une durée de 
 Pour tous les exemples, sauf indication contraire :
 - Plan : **révision annuelle tous les 15 000 km ou 12 mois**.
 - Date du jour : **30/10/2026**.
+- Véhicule mis en circulation le **01/01/2020**.
 
 ### Ajout d'interventions
 
@@ -106,7 +108,9 @@ Pour tous les exemples, sauf indication contraire :
 | A | 70 000 | 28/08/2026 à 50 000 km | révision **due** (20 000 km parcourus) | R9 |
 | B | 52 000 | 01/09/2025 à 50 000 km | révision **due** (plus de 12 mois) | R10 |
 | C | 55 000 | 28/08/2026 à 50 000 km | **rien** à faire | R9 + R10 |
-| D | 55 000 | jamais faite | révision **due** | R8 |
+| D | 55 000 | jamais faite | révision **due** (55 000 km depuis 0) | R8 + R9 |
+| D2 | 5 000, voiture mise en circulation le **01/06/2026** | jamais faite | **rien** à faire (5 000 km et 5 mois depuis la mise en circulation) | R8 |
+| D3 | 5 000, voiture mise en circulation le **01/06/2025** | jamais faite | révision **due** (plus de 12 mois depuis la mise en circulation) | R8 + R10 |
 | E | 65 000 | 28/08/2026 à 50 000 km | révision **due** (pile 15 000 km) | R9, cas limite |
 | F | 70 000 | 01/03/2025 à 40 000 km **et** 28/08/2026 à 60 000 km | **rien** à faire (seule celle de 60 000 compte) | R7 |
 
@@ -170,8 +174,8 @@ Si un fichier du bas importe un fichier du haut, on obtient un **import circulai
 | 2 | Représenter une intervention | ✅ |
 | 3 | Ajouter une intervention (R2, R3, R3 bis) | ✅ |
 | 4 | Retrouver la dernière intervention d'un type | ✅ |
-| 5 | Représenter une règle et un plan | ✅ (tests R-a à R-c à écrire) |
-| 6 | Calculer les entretiens dus | 🔄 prochaine |
+| 5 | Représenter une règle et un plan | ✅ |
+| 6 | Calculer les entretiens dus | 🔄 en cours |
 | 7 | Relecture et publication | ⏳ |
 
 ### Étape 5 : Représenter une règle et un plan ✅
@@ -182,9 +186,11 @@ Si un fichier du bas importe un fichier du haut, on obtient un **import circulai
 ### Étape 6 : Calculer les entretiens dus
 - À partir d'un véhicule, d'un plan et d'une date du jour, renvoie la liste des types dus.
 - Écris d'abord l'algorithme en **français**, puis code-le ligne par ligne.
+- Ajoute d'abord la **date de mise en circulation** au véhicule, puis mets à jour tes tests existants qui créent un véhicule.
 - Réutilise ta recherche de la dernière intervention.
+- Pour chaque type, détermine un **point de départ** (km + date) : la dernière intervention, ou la mise en circulation si l'entretien n'a jamais été fait (R8). Les vérifications sont ensuite les mêmes dans les deux cas.
 - Attention à R9 et R10 : ne regarde un critère **que** s'il a une limite.
-- 🧪 **Tests :** exemples **A à F, H, I, J et K**, un test par exemple.
+- 🧪 **Tests :** exemples **A à F (dont D2 et D3), H, I, J et K**, un test par exemple.
 
 ### Étape 7 : Relecture et publication
 - Lance le formateur, le vérificateur de code et le vérificateur de types (`mypy`).

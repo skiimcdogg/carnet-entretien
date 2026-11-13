@@ -1,6 +1,5 @@
-from carnet_entretien.models import MaintenanceRule
 from carnet_entretien.enums import MaintenanceType
-
+from carnet_entretien.models import MaintenanceRule
 
 DEFAULT_MAINTENANCE_PLAN: dict[MaintenanceType, MaintenanceRule] = {
     MaintenanceType.ANNUAL_SERVICE: MaintenanceRule(kms=15_000, months=12),
