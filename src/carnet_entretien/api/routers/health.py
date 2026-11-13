@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+
 router = APIRouter(
     prefix="/health",
     tags=["health"]
@@ -7,4 +8,6 @@ router = APIRouter(
 
 @router.get("/")
 async def get_health():
-    return "APP IS LIVE"
+    return {
+        "status": "ok"
+    }
