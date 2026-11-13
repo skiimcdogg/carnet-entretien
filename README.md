@@ -17,9 +17,12 @@ Ce projet existe aujourd'hui car, en tant qu'ancien mécanicien, je reconnais la
 
 ## Règles métier
 
-- Un entretien est dû si les kms de l'entretien sont supérieurs aux kilomètres du véhicule
-- Si un entretien n'a jamais été fait, comme une voiture neuve par exemple, l'application se base sur la date de mise en circulation et les kms à 0
-- Un entretien est refusé si ses kms sont supérieurs à celui du véhicule, pareil pour la date de l'entretien qui ne doit pas être dans le futur
+## Règles métier
+
+- Chaque type d'entretien a une règle : une limite en km, une limite en mois, ou les deux (ex : révision tous les 15 000 km ou 12 mois).
+- Un entretien est dû quand les km parcourus **ou** le temps écoulé depuis le dernier entretien de ce type atteignent la limite. C'est le premier des deux qui compte.
+- Si un entretien n'a jamais été fait, on compte depuis 0 km et la date de mise en circulation. Une voiture neuve n'est donc pas signalée trop tôt.
+- Un entretien est refusé si ses km dépassent ceux du véhicule, ou si sa date est dans le futur.
 
 ## Stack technique
 Python 3.15, pytest, ruff, uv
