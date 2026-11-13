@@ -7,7 +7,9 @@ authors = [
     { name = "antoine", email = "antoine-78280@hotmail.fr" }
 ]
 requires-python = ">=3.15"
-dependencies = []
+dependencies = [
+    "fastapi[standard]>=0.162.5",
+]
 
 [project.scripts]
 carnet-entretien = "carnet_entretien:main"
