@@ -17,8 +17,6 @@ Ce projet existe aujourd'hui car, en tant qu'ancien mécanicien, je reconnais la
 
 ## Règles métier
 
-## Règles métier
-
 - Chaque type d'entretien a une règle : une limite en km, une limite en mois, ou les deux (ex : révision tous les 15 000 km ou 12 mois).
 - Un entretien est dû quand les km parcourus **ou** le temps écoulé depuis le dernier entretien de ce type atteignent la limite. C'est le premier des deux qui compte.
 - Si un entretien n'a jamais été fait, on compte depuis 0 km et la date de mise en circulation. Une voiture neuve n'est donc pas signalée trop tôt.

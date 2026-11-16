@@ -364,3 +364,23 @@ def test_vehicle_maintenance_with_wrong_kms_raise_value_error():
                 Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2021, 6, 1), 36_000),
             ],
         )
+
+
+def test_vehicle_with_negative_kms_raise_error():
+    with pytest.raises(ValueError, match="Kms cannot be lower than zero"):
+        Vehicle(
+            "Volkswagen",
+            "Polo",
+            -10_000,
+            REGISTRATION_DATE,
+        )
+
+
+def test_maintenance_rule_with_negative_kms_raise_error():
+    with pytest.raises(ValueError, match="Kms cannot be lower or equal to zero"):
+        MaintenanceRule(kms=-12_000, months=12)
+
+
+def test_maintenance_rule_with_kms_and_months_equal_to_zero_raise_error():
+    with pytest.raises(ValueError, match="At least kms or months must be greater than zero"):
+        MaintenanceRule(kms=0, months=0)

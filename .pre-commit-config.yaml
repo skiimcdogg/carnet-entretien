@@ -19,4 +19,10 @@ repos:
         language: system
         pass_filenames: false
         types: [python]
+      - id: mypy
+        name: mypy
+        entry: uv run mypy src
+        language: system
+        pass_filenames: false
+        types: [python]
 

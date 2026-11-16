@@ -19,6 +19,12 @@ class MaintenanceRule:
     def __post_init__(self) -> None:
         if self.kms is None and self.months is None:
             raise ValueError("Kms or months must have a value")
+        if self.kms == 0 and self.months == 0:
+            raise ValueError("At least kms or months must be greater than zero")
+        if self.kms is not None and self.kms <= 0:
+            raise ValueError("Kms cannot be lower or equal to zero")
+        if self.months is not None and self.months <= 0:
+            raise ValueError("Months cannot be lower or equal to zero")
 
 
 @dataclass
@@ -30,12 +36,16 @@ class Vehicle:
     maintenance_history: list[Maintenance] = field(default_factory=list)
 
     def __post_init__(self) -> None:
+        if self.mileage_kms < 0:
+            raise ValueError("Kms cannot be lower than zero")
         for maintenance in self.maintenance_history:
             self._check_mileage(maintenance)
 
     def _check_mileage(self, maintenance: Maintenance) -> None:
         if maintenance.mileage_kms > self.mileage_kms:
             raise ValueError("The maintenance kms must NOT be greater than the vehicle kms")
+        if maintenance.maintenance_date < self.first_registration_date:
+            raise ValueError("The maintenance date cannot be before the registration date")
 
     def add_maintenance(self, maintenance: Maintenance, today: date) -> None:
         self._check_mileage(maintenance)
