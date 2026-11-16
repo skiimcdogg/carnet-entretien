@@ -132,20 +132,20 @@
 ## Checklist
 
 **Priorité 1**
-- [ ] Refuser un kilométrage négatif sur le véhicule et sur l'entretien
-- [ ] Refuser une règle avec une limite négative ou nulle
-- [ ] Refuser un entretien daté avant la mise en circulation
+- [x] Refuser un kilométrage négatif sur le véhicule et sur l'entretien
+- [x] Refuser une règle avec une limite négative ou nulle
+- [x] Refuser un entretien daté avant la mise en circulation
 - [ ] Un test pour chaque refus
-- [ ] Corriger la valeur de `TRANSMISSION`
+- [x] Corriger la valeur de `TRANSMISSION`
 
 **Priorité 2**
-- [ ] Nommer les deux moitiés de la condition du calcul
+- [ ] Nommer les deux moitiés de la condition du calcul (je comprends pas)
 - [ ] Ajouter `py.typed` et le hook mypy dans pre-commit
 - [ ] Typer le retour de `get_health`
 - [ ] Découvrir les fixtures pytest et nommer les arguments
 
 **Priorité 3**
-- [ ] Faire le ménage du tableau ci-dessus
+- [x] Faire le ménage du tableau ci-dessus
 
 ## Journal de progression
 
