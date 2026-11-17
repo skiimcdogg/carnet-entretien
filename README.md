@@ -32,6 +32,7 @@ git clone https://github.com/skiimcdogg/carnet-entretien
 cd carnet-entretien
 uv sync
 uv run pytest -vv
+uv run uvicorn carnet_entretien.api.main:app --reload
 ```
 
 ## Prochaines étapes
