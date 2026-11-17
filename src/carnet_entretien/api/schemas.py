@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from carnet_entretien.enums import MaintenanceType
 
 
-class MaintenanceCreate(BaseModel):
+class MaintenanceSchema(BaseModel):
     maintenance_type: MaintenanceType
     maintenance_date: date
     mileage_kms: int = Field(ge=0)
@@ -21,4 +21,4 @@ class VehicleCreate(BaseModel):
 
 class VehicleResponse(VehicleCreate):
     id: UUID
-    maintenance_history: list[MaintenanceCreate]
+    maintenance_history: list[MaintenanceSchema]
