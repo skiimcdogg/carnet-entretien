@@ -34,8 +34,8 @@ async def create_vehicle(data: VehicleCreate) -> VehicleResponse:
     return to_response(vehicle_id, vehicle)
 
 
-@router.get("/{vehicle_id}", status_code=200)
-async def get_vehicle(vehicle_id: UUID):
+@router.get("/{vehicle_id}")
+async def get_vehicle(vehicle_id: UUID) -> VehicleResponse:
     vehicle = vehicles.get(vehicle_id)
     if vehicle is None:
         raise HTTPException(status_code=404, detail="vehicle not found")
