@@ -40,3 +40,12 @@ async def get_vehicle(vehicle_id: UUID) -> VehicleResponse:
     if vehicle is None:
         raise HTTPException(status_code=404, detail="vehicle not found")
     return to_response(vehicle_id, vehicle)
+
+
+@router.get("")
+async def get_all_vehicles() -> list[VehicleResponse]:
+    vehicles_list = []
+    for vehicle_id, vehicle in vehicles.items():
+        vehicles_list.append(to_response(vehicle_id, vehicle))
+
+    return vehicles_list

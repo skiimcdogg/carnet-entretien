@@ -75,5 +75,18 @@ def test_get_vehicle_with_non_existing_id_returns_404():
     vehicle_fake_id = uuid4()
 
     get_response = client.get(f"/vehicles/{vehicle_fake_id}")
-
     assert get_response.status_code == 404
+
+
+def test_get_vehicle_list():
+    post_response = client.post(
+        "/vehicles",
+        json={"brand": "Dacia", "model": "Sandero", "mileage_kms": 39000, "first_registration_date": "2019-07-12"},
+    )
+
+    get_response = client.get("/vehicles")
+    vehicle_list = get_response.json()
+    vehicle_list_id = [v["id"] for v in vehicle_list]
+
+    assert get_response.status_code == 200
+    assert post_response.json()["id"] in vehicle_list_id
