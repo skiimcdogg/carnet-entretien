@@ -1,10 +1,14 @@
+from typing import Annotated
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from carnet_entretien.api.dependencies import get_vehicle_repository
 from carnet_entretien.api.schemas import MaintenanceSchema, VehicleCreate, VehicleResponse
-from carnet_entretien.api.storage import vehicles
 from carnet_entretien.models import Vehicle
+from carnet_entretien.repositories.base import VehicleRepository
+
+RepositoryDep = Annotated[VehicleRepository, Depends(get_vehicle_repository)]
 
 
 def to_response(vehicle_id: UUID, vehicle: Vehicle) -> VehicleResponse:
@@ -27,25 +31,25 @@ router = APIRouter(prefix="/vehicles", tags=["vehicles"])
 
 
 @router.post("", status_code=201)
-async def create_vehicle(data: VehicleCreate) -> VehicleResponse:
+async def create_vehicle(data: VehicleCreate, repository: RepositoryDep) -> VehicleResponse:
     vehicle = Vehicle(**data.model_dump())
     vehicle_id = uuid4()
-    vehicles[vehicle_id] = vehicle
+    repository.save(vehicle_id, vehicle)
     return to_response(vehicle_id, vehicle)
 
 
 @router.get("/{vehicle_id}")
-async def get_vehicle(vehicle_id: UUID) -> VehicleResponse:
-    vehicle = vehicles.get(vehicle_id)
+async def get_vehicle(vehicle_id: UUID, repository: RepositoryDep) -> VehicleResponse:
+    vehicle = repository.get(vehicle_id)
     if vehicle is None:
         raise HTTPException(status_code=404, detail="vehicle not found")
     return to_response(vehicle_id, vehicle)
 
 
 @router.get("")
-async def get_all_vehicles() -> list[VehicleResponse]:
+async def get_all_vehicles(repository: RepositoryDep) -> list[VehicleResponse]:
     vehicles_list = []
-    for vehicle_id, vehicle in vehicles.items():
+    for vehicle_id, vehicle in repository.list_all():
         vehicles_list.append(to_response(vehicle_id, vehicle))
 
     return vehicles_list
