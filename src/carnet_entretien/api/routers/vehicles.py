@@ -49,3 +49,9 @@ async def get_all_vehicles() -> list[VehicleResponse]:
         vehicles_list.append(to_response(vehicle_id, vehicle))
 
     return vehicles_list
+
+
+# @router.post("/{vehicle_id}/maintenance")
+# async def add_maintenance_to_vehicle(data: MaintenanceSchema, vehicle_id: UUID) -> VehicleResponse:
+#     vehicle = vehicles.get(vehicle_id)
+#     return
