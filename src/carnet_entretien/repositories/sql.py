@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
-from carnet_entretien.db.tables import VehicleRow
+from carnet_entretien.db.tables import MaintenanceRow, VehicleRow
 from carnet_entretien.models import Maintenance, Vehicle
 
 
@@ -35,7 +35,7 @@ def _to_row(vehicle_id: UUID, vehicle: Vehicle) -> VehicleRow:
         mileage_kms=vehicle.mileage_kms,
         first_registration_date=vehicle.first_registration_date,
         maintenance_history=[
-            Maintenance(
+            MaintenanceRow(
                 maintenance_type=m.maintenance_type, maintenance_date=m.maintenance_date, mileage_kms=m.mileage_kms
             )
             for m in vehicle.maintenance_history
