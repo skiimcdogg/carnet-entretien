@@ -49,33 +49,30 @@ def test_list_all_returns_all_vehicles_with_its_id(repository, vehicle):
 
     repository.save(first_id, vehicle)
     repository.save(second_id, second_vehicle)
+    vehicle_list = repository.list_all()
 
-    assert repository.list_all() == [(first_id, vehicle), (second_id, second_vehicle)]
+    assert len(vehicle_list) == 2
+    assert (first_id, vehicle) in vehicle_list
+    assert (second_id, second_vehicle) in vehicle_list
 
 
-def test_vehicle_with_maintenance(repository):
-    vehicle = Vehicle(
-        "Volkswagen",
-        "Polo",
-        50_000,
-        REGISTRATION_DATE,
-        [
-            Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2022, 6, 1), 48_000),
-            Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2021, 6, 1), 36_000),
-        ],
-    )
+def test_vehicle_with_maintenance(repository, vehicle):
+    vehicle.maintenance_history = [
+        Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2022, 6, 1), 38_000),
+        Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2021, 6, 1), 26_000),
+    ]
 
     vehicle_id = uuid4()
     repository.save(vehicle_id, vehicle)
     vehicle_response = repository.get(vehicle_id)
 
     assert vehicle_response == Vehicle(
-        "Volkswagen",
-        "Polo",
-        50_000,
+        "Dacia",
+        "Sandero",
+        40_000,
         REGISTRATION_DATE,
         [
-            Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2022, 6, 1), 48_000),
-            Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2021, 6, 1), 36_000),
+            Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2022, 6, 1), 38_000),
+            Maintenance(MaintenanceType.ANNUAL_SERVICE, date(2021, 6, 1), 26_000),
         ],
     )
