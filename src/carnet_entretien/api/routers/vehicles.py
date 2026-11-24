@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from carnet_entretien.api.dependencies import get_vehicle_repository
 from carnet_entretien.api.schemas import MaintenanceSchema, VehicleCreate, VehicleResponse
 from carnet_entretien.models import Vehicle
-from carnet_entretien.repositories.base import VehicleRepository
+from carnet_entretien.repositories.vehicle_repository import VehicleRepository
 
 RepositoryDep = Annotated[VehicleRepository, Depends(get_vehicle_repository)]
 

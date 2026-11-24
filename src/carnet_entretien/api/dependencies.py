@@ -1,5 +1,5 @@
-from carnet_entretien.repositories.base import VehicleRepository
-from carnet_entretien.repositories.memory import InMemoryVehicleRepository
+from carnet_entretien.repositories.in_memory_vehicle_repository import InMemoryVehicleRepository
+from carnet_entretien.repositories.vehicle_repository import VehicleRepository
 
 _repository = InMemoryVehicleRepository()
 

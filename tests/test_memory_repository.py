@@ -4,7 +4,7 @@ from uuid import uuid4
 import pytest
 
 from carnet_entretien.models import Vehicle
-from carnet_entretien.repositories.memory import InMemoryVehicleRepository
+from carnet_entretien.repositories.in_memory_vehicle_repository import InMemoryVehicleRepository
 
 REGISTRATION_DATE = date(2010, 10, 30)
 

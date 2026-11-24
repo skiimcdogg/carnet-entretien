@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 
 from carnet_entretien.api.dependencies import get_vehicle_repository
 from carnet_entretien.api.main import app
-from carnet_entretien.repositories.memory import InMemoryVehicleRepository
+from carnet_entretien.repositories.in_memory_vehicle_repository import InMemoryVehicleRepository
 
 
 @pytest.fixture
