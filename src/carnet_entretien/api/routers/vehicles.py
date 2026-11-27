@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Annotated
 from uuid import UUID, uuid4
 
@@ -5,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from carnet_entretien.api.dependencies import get_vehicle_repository
 from carnet_entretien.api.schemas import MaintenanceSchema, VehicleCreate, VehicleResponse
-from carnet_entretien.models import Vehicle
+from carnet_entretien.models import Maintenance, Vehicle
 from carnet_entretien.repositories.vehicle_repository import VehicleRepository
 
 RepositoryDep = Annotated[VehicleRepository, Depends(get_vehicle_repository)]
@@ -55,7 +56,20 @@ async def get_all_vehicles(repository: RepositoryDep) -> list[VehicleResponse]:
     return vehicles_list
 
 
-# @router.post("/{vehicle_id}/maintenance")
-# async def add_maintenance_to_vehicle(data: MaintenanceSchema, vehicle_id: UUID) -> VehicleResponse:
-#     vehicle = vehicles.get(vehicle_id)
-#     return
+@router.post("/{vehicle_id}/maintenances", status_code=201)
+async def add_maintenance_to_vehicle(
+    data: MaintenanceSchema, vehicle_id: UUID, repository: RepositoryDep
+) -> VehicleResponse:
+    vehicle = repository.get(vehicle_id)
+
+    if vehicle is None:
+        raise HTTPException(status_code=404, detail="vehicle not found")
+    maintenance = Maintenance(**data.model_dump())
+
+    try:
+        vehicle.add_maintenance(maintenance, date.today())
+    except ValueError as err:
+        raise HTTPException(status_code=422, detail=str(err))
+
+    repository.save(vehicle_id, vehicle)
+    return to_response(vehicle_id, vehicle)

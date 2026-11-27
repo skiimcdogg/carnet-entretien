@@ -89,3 +89,59 @@ def test_get_vehicle_list(client):
 
     assert get_response.status_code == 200
     assert set_ids_from_post == vehicles_ids_set
+
+
+def test_add_maintenance_to_vehicle(client):
+    vehicle = client.post(
+        "/vehicles",
+        json={"brand": "Dacia", "model": "Sandero", "mileage_kms": 39000, "first_registration_date": "2019-07-12"},
+    )
+    vehicle_id = vehicle.json()["id"]
+
+    maintenance_response = client.post(
+        f"vehicles/{vehicle_id}/maintenances",
+        json={"maintenance_type": "annual_service", "maintenance_date": "2022-07-12", "mileage_kms": 38000},
+    )
+
+    assert maintenance_response.status_code == 201
+    assert maintenance_response.json() == {
+        "brand": "Dacia",
+        "model": "Sandero",
+        "mileage_kms": 39000,
+        "first_registration_date": "2019-07-12",
+        "id": vehicle_id,
+        "maintenance_history": [
+            {"maintenance_type": "annual_service", "maintenance_date": "2022-07-12", "mileage_kms": 38000}
+        ],
+    }
+
+
+def test_maintenance_with_greater_kms_than_vehicle_returns_422(client):
+    vehicle = client.post(
+        "/vehicles",
+        json={"brand": "Dacia", "model": "Sandero", "mileage_kms": 39000, "first_registration_date": "2019-07-12"},
+    )
+    vehicle_id = vehicle.json()["id"]
+
+    maintenance_response = client.post(
+        f"vehicles/{vehicle_id}/maintenances",
+        json={"maintenance_type": "annual_service", "maintenance_date": "2022-07-12", "mileage_kms": 44000},
+    )
+
+    assert maintenance_response.status_code == 422
+    assert maintenance_response.json()["detail"] == "The maintenance kms must NOT be greater than the vehicle kms"
+
+
+def test_maintenance_with_wrong_type_returns_422(client):
+    vehicle = client.post(
+        "/vehicles",
+        json={"brand": "Dacia", "model": "Sandero", "mileage_kms": 39000, "first_registration_date": "2019-07-12"},
+    )
+    vehicle_id = vehicle.json()["id"]
+
+    maintenance_response = client.post(
+        f"vehicles/{vehicle_id}/maintenances",
+        json={"maintenance_type": "bodywork", "maintenance_date": "2022-07-12", "mileage_kms": 44000},
+    )
+
+    assert maintenance_response.status_code == 422
